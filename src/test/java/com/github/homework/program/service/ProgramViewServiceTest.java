@@ -52,6 +52,7 @@ class ProgramViewServiceTest {
                     then(programViewDto.getIntroduction()).isEqualTo("introduction");
                     then(programViewDto.getIntroductionDetail()).isEqualTo("introductionDetail");
                     then(programViewDto.getRegion()).isEqualTo("region");
+                    then(programViewDto.getThemeName()).isEqualTo("theme");
                 }
         );
 
@@ -62,7 +63,7 @@ class ProgramViewServiceTest {
     @DisplayName("프로그램이 여러개 일때")
     void pageByTest() {
         //given
-        ProgramViewDto programViewDto = new ProgramViewDto(1L, "name");
+        ProgramViewDto programViewDto = new ProgramViewDto(1L, "name", "themeName");
 
         given(programRepository.findBy(PageRequest.of(0, 100)))
                 .willReturn(
@@ -76,6 +77,7 @@ class ProgramViewServiceTest {
         then(programViewDtos.getContent()).allSatisfy(p -> {
                     then(p.getId()).isGreaterThan(0L);
                     then(p.getName()).isEqualTo("name");
+                    then(p.getThemeName()).isEqualTo("themeName");
                 }
         );
     }

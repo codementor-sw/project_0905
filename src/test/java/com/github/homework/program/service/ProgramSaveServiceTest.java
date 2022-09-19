@@ -48,6 +48,7 @@ public class ProgramSaveServiceTest {
         programSaveService.saveProgram(programSaveDto);
         //then
         verify(this.programRepository, times(1)).save(argumentCaptor.capture());
+        verify(this.programRepository, times(0) ).findAll();
         then(argumentCaptor.getValue()).isNotNull();
         then(argumentCaptor.getValue().getName()).isEqualTo("여수 10미 먹거리");
         then(argumentCaptor.getValue().getRegion()).isEqualTo("전라남도 여수시");
