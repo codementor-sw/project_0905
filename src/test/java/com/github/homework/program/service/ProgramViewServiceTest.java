@@ -81,4 +81,32 @@ class ProgramViewServiceTest {
                 }
         );
     }
+
+    @Test
+    @DisplayName("프로그램 이름으로 조회")
+    void getByNameTest() {
+        //given
+        Program program = Program.builder()
+                .name("name")
+                .introduction("introduction")
+                .introductionDetail("introductionDetail")
+                .region("region")
+                .theme(new Theme("theme"))
+                .build();
+
+        given(programRepository.findByName("name")).willReturn(Optional.of(program));
+        //when
+        Optional<ProgramViewDetailDto> optionalProgramViewDto = programViewService.getBy("name");
+        //then
+        then(optionalProgramViewDto).hasValueSatisfying(programViewDto -> {
+                    then(programViewDto.getName()).isEqualTo("name");
+                    then(programViewDto.getIntroduction()).isEqualTo("introduction");
+                    then(programViewDto.getIntroductionDetail()).isEqualTo("introductionDetail");
+                    then(programViewDto.getRegion()).isEqualTo("region");
+                    then(programViewDto.getThemeName()).isEqualTo("theme");
+                }
+        );
+
+    }
+
 }

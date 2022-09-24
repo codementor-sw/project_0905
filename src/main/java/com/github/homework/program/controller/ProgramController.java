@@ -40,6 +40,12 @@ public class ProgramController {
         return programViewDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{name}")
+    public ResponseEntity<ProgramViewDetailDto> getBy(@PathVariable String name) {
+        Optional<ProgramViewDetailDto> programViewDto = this.programViewService.getBy(name);
+        return programViewDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<SimpleResponse> saveProgram(@RequestBody @Valid ProgramSaveDto
                                                               programSaveDto) {

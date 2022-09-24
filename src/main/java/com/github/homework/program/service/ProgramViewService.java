@@ -28,6 +28,17 @@ public class ProgramViewService {
         ));
     }
 
+    public Optional<ProgramViewDetailDto> getBy(String name) {
+        return programRepository.findByName(name).map(program -> new ProgramViewDetailDto(
+                program.getId(),
+                program.getName(),
+                program.getIntroduction(),
+                program.getIntroductionDetail(),
+                program.getRegion(),
+                program.getTheme().getName()
+        ));
+    }
+
     public Page<ProgramViewDto> pageBy(Pageable pageable) {
         return programRepository.findBy(pageable);
     }
