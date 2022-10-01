@@ -1,10 +1,7 @@
 package com.github.homework.program.controller;
 
 import com.github.homework.program.exception.ProgramNotFoundException;
-import com.github.homework.program.model.ProgramSaveDto;
-import com.github.homework.program.model.ProgramViewDetailDto;
-import com.github.homework.program.model.ProgramViewDto;
-import com.github.homework.program.model.SimpleResponse;
+import com.github.homework.program.model.*;
 import com.github.homework.program.service.ProgramSaveService;
 import com.github.homework.program.service.ProgramViewService;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +31,21 @@ public class ProgramController {
         return ResponseEntity.ok(this.programViewService.pageBy(pageable));
     }
 
+    @GetMapping("/popluar-tourist-attractions")
+    public ResponseEntity<Page<PopularViewDto>> getByViews(
+            @PageableDefault(sort = "views", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(this.programViewService.attractionsBy(pageable));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProgramViewDetailDto> getBy(@PathVariable Long id) {
         Optional<ProgramViewDetailDto> programViewDto = this.programViewService.getBy(id);
         return programViewDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<ProgramViewDetailDto> getBy(@PathVariable String name) {
+    @GetMapping("/")
+    public ResponseEntity<ProgramViewDetailDto> getBy(@RequestParam("name") String name) {
         Optional<ProgramViewDetailDto> programViewDto = this.programViewService.getBy(name);
         return programViewDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

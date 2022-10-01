@@ -2,9 +2,10 @@ package com.github.homework.program.repository;
 
 
 import com.github.homework.program.domain.Program;
+import com.github.homework.program.model.PopularViewDto;
 import com.github.homework.program.model.ProgramViewDto;
+import com.github.homework.program.model.QPopularViewDto;
 import com.github.homework.program.model.QProgramViewDto;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,20 @@ public class ProgramCustomRepositoryImpl extends QuerydslRepositorySupport imple
                         program.id,
                         program.name,
                         program.theme.name
+                ));
+
+        return PageableExecutionUtils.getPage(query.fetch(), pageable, query::fetchCount);
+    }
+
+    @Override
+    public Page<PopularViewDto> findByViews(Pageable pageable){
+        JPQLQuery<PopularViewDto> query = Objects.requireNonNull(getQuerydsl())
+                .applyPagination(pageable, from(program)
+                ).select(new QPopularViewDto(
+                        program.id,
+                        program.name,
+                        program.region,
+                        program.views
                 ));
 
         return PageableExecutionUtils.getPage(query.fetch(), pageable, query::fetchCount);
