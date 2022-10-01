@@ -29,6 +29,8 @@ public class Program {
     private String region;
     @Column(name = "introduction_detail", nullable = false)
     private String introductionDetail;
+    @Column(name = "views", nullable=true)
+    private Integer views;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "theme_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
@@ -42,6 +44,7 @@ public class Program {
         this.introductionDetail = introductionDetail;
         this.region = region;
         this.theme = theme;
+        this.views=0;
     }
 
     public void updateProgram(String name, String introduction, String introductionDetail, String region,
@@ -51,6 +54,10 @@ public class Program {
         this.introductionDetail = introductionDetail;
         this.region = region;
         this.theme = theme;
+    }
+
+    public void plusViews(){
+        this.views++;
     }
 
 }

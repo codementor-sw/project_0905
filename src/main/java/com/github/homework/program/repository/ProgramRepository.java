@@ -10,4 +10,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProgramRepository extends JpaRepository<Program, Long>, ProgramCustomRepository {
+    Optional<Program> findByName(String name);
 }
