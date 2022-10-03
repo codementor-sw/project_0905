@@ -53,6 +53,35 @@ class ProgramViewServiceTest {
                     then(programViewDto.getIntroductionDetail()).isEqualTo("introductionDetail");
                     then(programViewDto.getRegion()).isEqualTo("region");
                     then(programViewDto.getThemeName()).isEqualTo("theme");
+                    then(programViewDto.getCount()).isEqualTo(1L);
+                }
+        );
+
+    }
+
+    @Test
+    @DisplayName("프로그램이 이름으로 조회")
+    void getByNameTest() {
+        //given
+        Program program = Program.builder()
+                .name("name")
+                .introduction("introduction")
+                .introductionDetail("introductionDetail")
+                .region("region")
+                .theme(new Theme("theme"))
+                .build();
+
+        given(programRepository.findByName("name")).willReturn(Optional.of(program));
+        //when
+        Optional<ProgramViewDetailDto> optionalProgramViewDto = programViewService.getBy("name");
+        //then
+        then(optionalProgramViewDto).hasValueSatisfying(programViewDto -> {
+                    then(programViewDto.getName()).isEqualTo("name");
+                    then(programViewDto.getIntroduction()).isEqualTo("introduction");
+                    then(programViewDto.getIntroductionDetail()).isEqualTo("introductionDetail");
+                    then(programViewDto.getRegion()).isEqualTo("region");
+                    then(programViewDto.getThemeName()).isEqualTo("theme");
+                    then(programViewDto.getCount()).isEqualTo(0L);
                 }
         );
 
@@ -63,7 +92,7 @@ class ProgramViewServiceTest {
     @DisplayName("프로그램이 여러개 일때")
     void pageByTest() {
         //given
-        ProgramViewDto programViewDto = new ProgramViewDto(1L, "name", "themeName");
+        ProgramViewDto programViewDto = new ProgramViewDto(1L, "name", "themeName", 1L);
 
         given(programRepository.findBy(PageRequest.of(0, 100)))
                 .willReturn(
@@ -78,6 +107,35 @@ class ProgramViewServiceTest {
                     then(p.getId()).isGreaterThan(0L);
                     then(p.getName()).isEqualTo("name");
                     then(p.getThemeName()).isEqualTo("themeName");
+                    then(p.getCount()).isEqualTo(1L);
+                }
+        );
+    }
+
+    @Test
+    @DisplayName("프로그램이 조회수가 상위10개")
+    void topByTest() {
+        //given
+        Program program = Program.builder()
+                .name("name")
+                .introduction("introduction")
+                .introductionDetail("introductionDetail")
+                .region("region")
+                .theme(new Theme("theme"))
+                .build();
+
+        given(programRepository.findTop10ByOrderByCountDesc())
+                .willReturn(List.of(program, program));
+
+        //when
+        List<ProgramViewDto> programViewDtos = programViewService.topBy();
+        //then
+        then(programViewDtos).hasSize(2);
+        then(programViewDtos).allSatisfy(p -> {
+
+                    then(p.getName()).isEqualTo("name");
+                    then(p.getThemeName()).isEqualTo("theme");
+                    then(p.getCount()).isEqualTo(0L);
                 }
         );
     }

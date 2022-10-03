@@ -30,6 +30,9 @@ public class Program {
     @Column(name = "introduction_detail", nullable = false)
     private String introductionDetail;
 
+    @Column(name = "count", nullable = false)
+    private Long count = 0L;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "theme_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Theme theme;
@@ -51,6 +54,10 @@ public class Program {
         this.introductionDetail = introductionDetail;
         this.region = region;
         this.theme = theme;
+    }
+
+    public void plusCount() {
+        this.count++;
     }
 
 }

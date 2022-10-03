@@ -1,0 +1,36 @@
+GET http://localhost:9090/api/programs/1
+
+<> 2022-10-03T215459.200.json
+
+###
+
+GET http://localhost:9090/api/programs/1
+
+<> 2022-10-03T215455.200.json
+
+###
+
+GET http://localhost:9090/api/programs/1
+
+<> 2022-10-03T214936.200.json
+
+###
+
+GET http://localhost:9090/api/programs/1
+
+<> 2022-10-03T214932.200.json
+
+###
+
+GET http://localhost:9090/api/programs/1
+
+<> 2022-10-03T214926.200.json
+
+###
+
+GET http://localhost:9090/api/programs
+
+<> 2022-10-03T214915.200.json
+
+###
+

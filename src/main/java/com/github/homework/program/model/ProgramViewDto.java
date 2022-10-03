@@ -9,10 +9,13 @@ public class ProgramViewDto {
     private final String name;
 
     private final String themeName;
+
+    private final Long count;
     @QueryProjection
-    public ProgramViewDto(Long id, String name, String themeName) {
+    public ProgramViewDto(Long id, String name, String themeName, Long count) {
         this.id = id;
         this.name = name;
         this.themeName = themeName;
+        this.count = count;
     }
 }

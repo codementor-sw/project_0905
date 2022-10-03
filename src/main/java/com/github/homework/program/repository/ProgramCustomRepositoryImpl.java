@@ -30,7 +30,8 @@ public class ProgramCustomRepositoryImpl extends QuerydslRepositorySupport imple
                 ).select(new QProgramViewDto(
                         program.id,
                         program.name,
-                        program.theme.name
+                        program.theme.name,
+                        program.count
                 ));
 
         return PageableExecutionUtils.getPage(query.fetch(), pageable, query::fetchCount);

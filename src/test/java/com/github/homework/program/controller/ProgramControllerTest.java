@@ -40,9 +40,30 @@ public class ProgramControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("introductionDetail").value("여행자와 현지인이 꼽은 최고의 먹거리 여행지' 에서 대한민국 229개 지방자치단체 중 여수시가 1위에 선정되어 식도락 여행에 최적화된 프로그램"))
                 .andExpect(jsonPath("region").value("전라남도 여수시"))
                 .andExpect(jsonPath("themeName").value("식도락여행"))
+                .andExpect(jsonPath("count").value(1))
                 .andDo(write.document(
                         pathParameters(
                                 parameterWithName("id").description("id")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("프로그램 이름으로 조회")
+    public void getProgramNameTest() throws Exception {
+        Program program = givenProgram(givenTheme("식도락여행"));
+        this.mockMvc.perform(get("/api/programs/name").param("name", program.getName()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").isNumber())
+                .andExpect(jsonPath("name").value("여수 10미 먹거리"))
+                .andExpect(jsonPath("introduction").value("여수시 일대 게장백반, 돌산갓김치등"))
+                .andExpect(jsonPath("introductionDetail").value("여행자와 현지인이 꼽은 최고의 먹거리 여행지' 에서 대한민국 229개 지방자치단체 중 여수시가 1위에 선정되어 식도락 여행에 최적화된 프로그램"))
+                .andExpect(jsonPath("region").value("전라남도 여수시"))
+                .andExpect(jsonPath("themeName").value("식도락여행"))
+                .andExpect(jsonPath("count").value(0))
+                .andDo(write.document(
+                        requestParameters(
+                                parameterWithName("name").description("프로그램 이름")
                         )
                 ));
     }
@@ -65,8 +86,33 @@ public class ProgramControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$..id").isNotEmpty())
                 .andExpect(jsonPath("$..name").value("여수 10미 먹거리"))
                 .andExpect(jsonPath("$..themeName").value("식도락여행"))
+                .andExpect(jsonPath("$..count").value(0))
                 .andExpect(jsonPath("totalPages").value("1"))
                 .andExpect(jsonPath("totalElements").value("1"));
+    }
+
+    @Test
+    @DisplayName("프로그램 상위 10건 조회")
+    public void topByProgramTest() throws Exception {
+        IntStream.range(0, 20).forEach(i -> {
+                    Program program = Program.builder()
+                            .name("name")
+                            .introduction("introduction")
+                            .introductionDetail("introductionDetail")
+                            .region("region")
+                            .theme(new Theme("theme" + i))
+                            .build();
+                    IntStream.range(i, 20).forEach(j -> program.plusCount());
+                    programRepository.save(program);
+                }
+        );
+
+        this.mockMvc.perform(get("/api/programs/tops"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("[0].id").isNotEmpty())
+                .andExpect(jsonPath("[0].name").value("name"))
+                .andExpect(jsonPath("[0].themeName").value("theme0"))
+                .andExpect(jsonPath("[0].count").value(20));
     }
 
     @Test
@@ -79,7 +125,7 @@ public class ProgramControllerTest extends BaseControllerTest {
                         "여행자와 현지인이 꼽은 최고의 먹거리 여행지' 에서 대한민국 229개 지방자치단체 중 여수시가 1위에 선정되어 식도락 여행에 최적화된 프로그램")
                 .build();
         this.mockMvc.perform(post("/api/programs/").contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(programSaveDto)))
+                        .content(this.objectMapper.writeValueAsString(programSaveDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("message").value("저장 성공"))
@@ -104,7 +150,7 @@ public class ProgramControllerTest extends BaseControllerTest {
                         "여행자와 현지인이 꼽은 최고의 먹거리 여행지' 에서 대한민국 229개 지방자치단체 중 여수시가 1위에 선정되어 식도락 여행에 최적화된 프로그램")
                 .build();
         this.mockMvc.perform(post("/api/programs/").contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(programSaveDto)))
+                        .content(this.objectMapper.writeValueAsString(programSaveDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("[0].field").value("name"))
@@ -125,7 +171,7 @@ public class ProgramControllerTest extends BaseControllerTest {
                 .build();
 
         this.mockMvc.perform(put("/api/programs/").contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(programSaveDto)))
+                        .content(this.objectMapper.writeValueAsString(programSaveDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(write.document(
@@ -149,7 +195,7 @@ public class ProgramControllerTest extends BaseControllerTest {
                 .introductionDetail("여행자와 현지인이 꼽은 최고의 먹거리 여행지' 에서 대한민국 229개 지방자치단체 중 여수시가 1위에 선정되어 식도락 여행에 최적화된 프로그램")
                 .build();
         this.mockMvc.perform(put("/api/programs/").contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(programSaveDto)))
+                        .content(this.objectMapper.writeValueAsString(programSaveDto)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

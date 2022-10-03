@@ -40,6 +40,16 @@ public class ProgramController {
         return programViewDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<ProgramViewDetailDto> getBy(@RequestParam String name) {
+        Optional<ProgramViewDetailDto> programViewDto = this.programViewService.getBy(name);
+        return programViewDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    @GetMapping("/tops")
+    public ResponseEntity<List<ProgramViewDto>> topBy(){
+        return ResponseEntity.ok(this.programViewService.topBy());
+    }
+
     @PostMapping
     public ResponseEntity<SimpleResponse> saveProgram(@RequestBody @Valid ProgramSaveDto
                                                               programSaveDto) {
